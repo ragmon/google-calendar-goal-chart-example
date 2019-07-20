@@ -4,11 +4,19 @@
     <meta charset="UTF-8">
     <title>Google Calendar Goal Chart Example - Tasks</title>
 
-    <script>
-
-    </script>
+    <script src="config.js"></script>
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
+
+      /**
+       * Global Variables
+       */
+      let currentTaskList = 'MDM4MjM2MzU0MDQ0MTkxODg1NDU6MDow';
+      let taskLists = [];
+      let tasks = [];
+      let nextPageToken = null;
+
+
       /**
        * Sample JavaScript code for tasks.tasks.list
        * See instructions for running APIs Explorer code samples locally:
@@ -27,7 +35,7 @@
       }
 
       function loadClient() {
-        gapi.client.setApiKey("YOUR_API_KEY");
+        gapi.client.setApiKey(config.API_KEY);
         return gapi.client.load("https://content.googleapis.com/discovery/v1/apis/tasks/v1/rest")
           .then(function () {
               console.log("GAPI client loaded for API");
@@ -37,22 +45,82 @@
             });
       }
 
-      // Make sure the client is loaded and sign-in is complete before calling this method.
-      function execute() {
-        return gapi.client.tasks.tasks.list({
-          "tasklist": "MDM4MjM2MzU0MDQ0MTkxODg1NDU6MDow"
-        })
+      function loadTaskLists() {
+        return gapi.client.tasks.tasklists.list({})
+          .then(function(response) {
+              // Handle the results here (response.result has the parsed body).
+              console.log("Response", response);
+              // TODO: render <select> options (iterate pagination calls)
+            },
+            function(err) { console.error("Execute error", err); });
+      }
+
+      /**
+       * Load tasks.
+       *
+       * NOTICE: Make sure the client is loaded and sign-in is complete before calling this method.
+       *
+       * @param tasklist Task list ID (required).
+       * @param nextPageToken Next page token (pagination).
+       * @returns {PromiseLike<T | never> | Promise<T | never>}
+       */
+      function loadTasks(tasklist, nextPageToken) {
+        const data = {
+          "tasklist": tasklist,
+          "maxResults": 25,
+          "showCompleted": true,
+          "showDeleted": true,
+          "showHidden": true
+        };
+        if (nextPageToken) {
+          data["pageToken"] = nextPageToken;
+        }
+        return gapi.client.tasks.tasks.list(data)
           .then(function (response) {
               // Handle the results here (response.result has the parsed body).
               console.log("Response", response);
-            },
-            function (err) {
-              console.error("Execute error", err);
-            });
+              // TODO: pagination calls iteration
+
+              transformTaskItems(response.result.items, tasks);
+
+              // Has next page
+              if ('nextPageToken' in response.result) {
+                loadTasks(tasklist, response.result.nextPageToken);
+              } else {
+                completeLoadTasks();
+              }
+          },
+          function (err) {
+            console.error("Execute error", err);
+          });
+      }
+
+      function completeLoadTasks() {
+        console.log('completeLoadTasks', tasks);
+        renderTaskList(tasks);
+      }
+
+      // // Processing task items response
+      // function processTasksItemsResponse
+      // }
+
+      function transformTaskItems(items) {
+        // console.log('transformTaskItems', items);
+        // tasks.push(items.forEach(transformTask));
+        // tasks = items;
+        tasks.push(...items)
+      }
+
+      function transformTask(item) {
+        return ;
+      }
+
+      function renderTaskList(tasks) {
+
       }
 
       gapi.load("client:auth2", function () {
-        gapi.auth2.init({client_id: "YOUR_CLIENT_ID"});
+        gapi.auth2.init({client_id: config.CLIENT_ID});
       });
     </script>
 
@@ -61,8 +129,13 @@
 <body>
 
 <button onClick="authenticate().then(loadClient)">authorize and load</button>
-<button onclick="loadTaskLists()"></button>
-<button onClick="execute()">execute</button>
+<button onclick="loadTaskLists()">Load Tasks List</button>
+<button onClick="loadTasks(currentTaskList)">Load Tasks</button>
+
+<hr>
+
+<!-- Task list selection -->
+<select class="task-lists"></select>
 
 </body>
 </html>
