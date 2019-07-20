@@ -11,7 +11,7 @@
       /**
        * Global Variables
        */
-      let currentTaskList = 'MDM4MjM2MzU0MDQ0MTkxODg1NDU6MDow';
+      let currentTaskList = '';
       let taskLists = [];
       let tasks = [];
       let nextPageToken = null;
@@ -45,15 +45,66 @@
             });
       }
 
-      function loadTaskLists() {
-        return gapi.client.tasks.tasklists.list({})
-          .then(function(response) {
+      function loadTaskLists(tasklist, nextPageToken) {
+        const data = {"maxResults": 25};
+        if (nextPageToken) {
+          data["pageToken"] = nextPageToken;
+        }
+
+        return gapi.client.tasks.tasklists.list(data)
+          .then(function (response) {
               // Handle the results here (response.result has the parsed body).
               console.log("Response", response);
-              // TODO: render <select> options (iterate pagination calls)
+
+              transformTaskList(response.result.items);
+
+              // Has next page
+              if ('nextPageToken' in response) {
+                loadTaskLists(tasklist, response.nextPageToken);
+              } else {
+                completeLoadTaskLists();
+              }
             },
-            function(err) { console.error("Execute error", err); });
+            function (err) {
+              console.error("Execute error", err);
+            });
       }
+
+      function transformTaskList(items) {
+        taskLists.push(...items);
+      }
+
+      function completeLoadTaskLists() {
+        console.log('completeLoadTaskLists');
+        renderTaskLists(taskLists);
+      }
+
+      function renderTaskLists(lists) {
+        function makeOption(list) {
+          let option = document.createElement("option");
+          option.value = list.id;
+          option.text = list.title;
+
+          return option;
+        }
+
+        console.log('renderTaskList');
+
+        const taskList = document.getElementsByClassName('task-lists')[0];
+        console.log('taskList', taskList);
+
+        lists.forEach((list) => {
+          console.log(list);
+          taskList.add(makeOption(list));
+        })
+      }
+
+      function getCurrentTaskList() {
+        const select = document.getElementsByClassName('task-lists')[0];
+        return select.options[select.selectedIndex].value;
+      }
+
+      // ------------------------------------------------------------------------------------------------------------
 
       /**
        * Load tasks.
@@ -66,7 +117,7 @@
        */
       function loadTasks(tasklist, nextPageToken) {
         const data = {
-          "tasklist": tasklist,
+          "tasklist": tasklist || getCurrentTaskList(),
           "maxResults": 25,
           "showCompleted": true,
           "showDeleted": true,
@@ -75,6 +126,7 @@
         if (nextPageToken) {
           data["pageToken"] = nextPageToken;
         }
+
         return gapi.client.tasks.tasks.list(data)
           .then(function (response) {
               // Handle the results here (response.result has the parsed body).
@@ -89,15 +141,14 @@
               } else {
                 completeLoadTasks();
               }
-          },
-          function (err) {
-            console.error("Execute error", err);
-          });
+            },
+            function (err) {
+              console.error("Execute error", err);
+            });
       }
 
       function completeLoadTasks() {
         console.log('completeLoadTasks', tasks);
-        renderTaskList(tasks);
       }
 
       // // Processing task items response
@@ -111,13 +162,9 @@
         tasks.push(...items)
       }
 
-      function transformTask(item) {
-        return ;
-      }
-
-      function renderTaskList(tasks) {
-
-      }
+      // function transformTask(item) {
+      //   return;
+      // }
 
       gapi.load("client:auth2", function () {
         gapi.auth2.init({client_id: config.CLIENT_ID});
@@ -130,7 +177,7 @@
 
 <button onClick="authenticate().then(loadClient)">authorize and load</button>
 <button onclick="loadTaskLists()">Load Tasks List</button>
-<button onClick="loadTasks(currentTaskList)">Load Tasks</button>
+<button onClick="loadTasks()">Load Tasks</button>
 
 <hr>
 
