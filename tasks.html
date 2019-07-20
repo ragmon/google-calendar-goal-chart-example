@@ -184,5 +184,66 @@
 <!-- Task list selection -->
 <select class="task-lists"></select>
 
+
+
+
+<!------------------------------------      Google Charts       ------------------------------------------->
+<hr>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+
+  // function drawChart() {
+  //
+  //   var data = google.visualization.arrayToDataTable([
+  //     ['Task', 'Hours per Day'],
+  //     ['Выполнено',     11],
+  //     ['Не выполнено',      2],
+  //   ]);
+  //
+  //   var options = {
+  //     title: 'Соотношение выполненных и не выполненых задач'
+  //   };
+  //
+  //   var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  //
+  //   chart.draw(data, options);
+  // }
+
+
+  function initChartTotalProportion() {
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(renderChartTotalProportion);                   //         <---- set callback
+  }
+
+  function renderChartTotalProportion() {
+
+    var options = {
+      title: 'Соотношение выполненных и не выполненых задач'
+    };
+
+    let completedCount = 0;
+    tasks.forEach((task) => {
+      completedCount += 'completed' in task;
+    });
+    const notCompleteCount = tasks.length - completedCount;
+    console.log('completedCount, notCompleteCount', completedCount, notCompleteCount);
+
+    const data = google.visualization.arrayToDataTable([
+      ['Task', 'Hours per Day'],
+      ['Выполнено',     completedCount],
+      ['Не выполнено',  notCompleteCount],
+    ]);
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    chart.draw(data, options);
+  }
+</script>
+
+<div id="piechart" style="width: 900px; height: 500px;"></div>
+
+<button onClick="initChartTotalProportion()">Calculate total proportion</button>
+
 </body>
 </html>
