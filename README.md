@@ -10,4 +10,19 @@ https://developers.google.com/calendar/quickstart/js
 ```
 cp config.js.example config.js
 ```
-2. Setup **config.js** primary parameters: `GOOGLE_TOKEN`, `GOOGLE_CLIENT_ID`.
+2. Setup **config.js** options: `API_KEY`, `CLIENT_ID`.
+
+## Running
+
+1. With Python 2.
+> Go to the project working directory and run python server.
+```
+python -m SimpleHTTPServer 8000
+```
+2. With NodeJS https://stackoverflow.com/a/16350826/2506123
+```
+# Installing NodeJS HTTP Server
+npm install http-server -g
+# Running HTTP Server on the working directory (just replace {WORKING_DIRECTORY} with your real path to the project)
+http-server {WORKING_DIRECTORY}
+```
