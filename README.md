@@ -11,6 +11,7 @@ https://developers.google.com/calendar/quickstart/js
 cp config.js.example config.js
 ```
 2. Setup **config.js** options: `API_KEY`, `CLIENT_ID`.
+![alt text](google-api-keys.png "Setup google API")
 
 ## Running
 
