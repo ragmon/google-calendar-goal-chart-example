@@ -4,6 +4,8 @@
 You can enable google API and get `CLIENT_ID`, `TOKEN` from
 https://developers.google.com/calendar/quickstart/js
 
+![alt text](google-api-keys.png "Setup google API")
+
 ## Install
 
 1. Copy config file example.
@@ -11,7 +13,6 @@ https://developers.google.com/calendar/quickstart/js
 cp config.js.example config.js
 ```
 2. Setup **config.js** options: `API_KEY`, `CLIENT_ID`.
-![alt text](google-api-keys.png "Setup google API")
 
 ## Running
 
