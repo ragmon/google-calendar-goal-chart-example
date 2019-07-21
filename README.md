@@ -15,12 +15,12 @@ cp config.js.example config.js
 
 ## Running
 
-1. With Python 2.
+* With Python 2.
 > Go to the project working directory and run python server.
 ```
 python -m SimpleHTTPServer 8000
 ```
-2. With NodeJS https://stackoverflow.com/a/16350826/2506123
+* With NodeJS https://stackoverflow.com/a/16350826/2506123
 ```
 # Installing NodeJS HTTP Server
 npm install http-server -g
