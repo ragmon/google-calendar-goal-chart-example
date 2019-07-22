@@ -1,0 +1,108 @@
+@import vars
+@import fonts
+@import libs
+
+::placeholder
+	color: #666
+
+::selection
+	background-color: $accent
+	color: #fff
+
+input, textarea
+	outline: none
+	&:focus:required:invalid
+		border-color: red
+	&:required:valid
+		border-color: green
+
+body
+	font-size: 16px
+	min-width: 320px
+	position: relative
+	line-height: 1.65
+	font-family: 'Roboto', sans-serif
+	overflow-x: hidden
+	color: $text
+
+// Custom Sass / Remove before use
+
+.container
+	
+
+.img-responsive
+	display: block
+	max-width: 100%
+	height: auto
+
+.example-grid
+	display: grid
+	grid-gap: $gutter
+	grid-template-columns: 1fr 1fr
+	grid-template-areas: "left right"
+	> div:first-child
+		grid-area: left
+	> div:last-child
+		grid-area: right
+	+media-breakpoint-down(xs)
+		display: block
+		> div
+			padding: $gutter/2 0
+	
+.example-img
+	width: 100%
+
+.parent // Lazy Load Placeholder Generator: https://webdesign-master.ru/services/lazy/
+	background-image: url(data:image/gif;base64,R0lGODlhCgAIAIABAN3d3f///yH5BAEAAAEALAAAAAAKAAgAAAINjAOnyJv2oJOrVXrzKQA7)
+
+.container-fluid
+	background-color: $bgc
+
+.start-container
+	height: 100vh
+	padding:
+		top: 38vh
+
+.denied_page
+	height: 100vh
+	padding:
+		top: 45vh
+	p.title
+		color: $title
+		font-size: 60px
+		font-family: "PTSans", "Arial", sans-serif
+		font-style: bold
+		font-weight: 700
+		text-align: center
+
+.loading-container
+	height: 100vh
+	margin:
+		right: 0
+		left: 0
+	padding:
+		top: 45vh
+	div
+		width: 200px
+		height: 200px
+		span
+			display: none
+
+p.invitation
+	margin-bottom: 14rem
+	color: $title
+	font-size: 60px
+	font-family: "PTSans", "Arial", sans-serif
+	font-style: bold
+	font-weight: 700
+	text-align: center
+
+a.button-first-start
+	display: block
+	margin:
+		left: auto
+		right: auto
+	font-size: 48px
+	font-family: "Roboto", "Arial", sans-serif
+	text-align: center
+	text-transform: uppercase
