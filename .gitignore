@@ -2,3 +2,7 @@
 config.js
 google-calendar-credentials.json
 token
+/node_modules/
+/.git/
+/**/Thumbs.db
+/**/*.DS_Store
